@@ -10,18 +10,18 @@ jobs:
     strategy:
       matrix:
         include:
-#          - image: crunchy-postgres
-#            tag: centos8-12.6-4.6.2
-#            share_path: /usr/pgsql-12/share
+          - image: crunchy-postgres
+            tag: centos8-12.6-4.6.2
+            share_path: /usr/pgsql-12/share
           - image: crunchy-postgres-ha
             tag: centos8-12.6-4.6.2
             share_path: /usr/pgsql-12/share
-#          - image: crunchy-postgres-gis
-#            tag: centos8-12.6-3.0-4.6.2
-#            share_path: /usr/pgsql-12/share
-#          - image: crunchy-postgres-gis-ha
-#            tag: centos8-12.6-3.0-4.6.2
-#            share_path: /usr/pgsql-12/share
+          - image: crunchy-postgres-gis
+            tag: centos8-12.6-3.0-4.6.2
+            share_path: /usr/pgsql-12/share
+          - image: crunchy-postgres-gis-ha
+            tag: centos8-12.6-3.0-4.6.2
+            share_path: /usr/pgsql-12/share
 
     runs-on: ubuntu-latest
     steps:
