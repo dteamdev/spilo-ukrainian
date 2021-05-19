@@ -23,6 +23,7 @@ COPY --from=builder  /dict_uk/distr/hunspell/build/hunspell/uk_UA.dic $SHARE_PAT
 COPY --from=builder  /dict_uk/distr/hunspell/build/hunspell/uk_UA.aff $SHARE_PATH/tsearch_data/ukrainian.affix
 COPY --from=builder  /dict_uk/distr/postgresql/ukrainian.stop $SHARE_PATH/tsearch_data/ukrainian.stop
 
-RUN $(cat ./init-script.sql) >> $SHARE_PATH/snowball_create.sql
+COPY ./init-script.sql .
+RUN $(cat ./init-script.sql) >> $SHARE_PATH/snowball_create.sql && rm ./init-script.sql
 
 USER 26
