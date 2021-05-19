@@ -19,8 +19,7 @@ USER root
 ARG SHARE_PATH
 
 COPY ./init-script.sql $SHARE_PATH/
-RUN $(cat $SHARE_PATH/init-script.sql) >> $SHARE_PATH/snowball_create.sql
-RUN rm $SHARE_PATH/init-script.sql
+RUN cat $SHARE_PATH/init-script.sql >> $SHARE_PATH/snowball_create.sql && rm $SHARE_PATH/init-script.sql
 
 COPY ./tsearch_data/ukrainian.syn $SHARE_PATH/tsearch_data/ukrainian.syn
 COPY --from=builder  /dict_uk/distr/hunspell/build/hunspell/uk_UA.dic $SHARE_PATH/tsearch_data/ukrainian.dict
