@@ -17,38 +17,37 @@
  */
 
 CREATE
-TEXT SEARCH DICTIONARY ukrainian_ispell
+    TEXT SEARCH DICTIONARY ukrainian_ispell
     ( TEMPLATE = ispell, DictFile = ukrainian, AffFile = ukrainian, StopWords = ukrainian );
 
 COMMENT
-ON TEXT SEARCH DICTIONARY turkish_stem IS 'ispell dict for turkish language';
+    ON TEXT SEARCH DICTIONARY ukrainian_ispell IS 'ispell dict for ukrainian language';
 
 CREATE
-TEXT SEARCH DICTIONARY ukrainian_stem
+    TEXT SEARCH DICTIONARY ukrainian_stem
     ( TEMPLATE = simple, StopWords = ukrainian );
 
 COMMENT
-ON TEXT SEARCH DICTIONARY turkish_stem IS 'simple stemmer for turkish language';
+    ON TEXT SEARCH DICTIONARY ukrainian_stem IS 'simple stemmer for ukrainian language';
 
 CREATE
-TEXT SEARCH DICTIONARY ukrainian_dict
+    TEXT SEARCH DICTIONARY ukrainian_dict
     ( TEMPLATE = synonym, SYNONYMS = ukrainian );
 
 CREATE
-TEXT SEARCH CONFIGURATION ukrainian (PARSER=default);
+    TEXT SEARCH CONFIGURATION ukrainian (PARSER =default);
 
 ALTER
-TEXT SEARCH CONFIGURATION ukrainian ADD MAPPING
+    TEXT SEARCH CONFIGURATION ukrainian ADD MAPPING
     FOR asciihword, asciiword, word, hword, hword_part
     WITH ukrainian_dict, ukrainian_ispell, ukrainian_stem;
 
-ALTER
-TEXT SEARCH CONFIGURATION ukrainian ADD MAPPING
-    FOR int, uint, numhword, numword, hword_numpart, email, float,
-        file, url, url_path, version, host, sfloat
+ALTER TEXT SEARCH CONFIGURATION ukrainian ALTER MAPPING 
+    FOR int, uint, numhword, numword, hword_numpart, email, 
+        float, file, url, url_path, version, host, sfloat 
     WITH simple;
 
-ALTER
-TEXT SEARCH CONFIGURATION ukrainian ADD MAPPING
-    FOR asciihword, asciiword, hword_asciipart
+ALTER TEXT SEARCH CONFIGURATION ukrainian ALTER MAPPING 
+    FOR asciihword, asciiword, hword_asciipart 
     WITH english_stem;
+
