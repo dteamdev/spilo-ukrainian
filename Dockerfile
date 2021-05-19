@@ -18,12 +18,12 @@ USER root
 
 ARG SHARE_PATH
 
+COPY ./init-script.sql /home/
+RUN $(cat /home/init-script.sql) >> $SHARE_PATH/snowball_create.sql && rm /home/init-script.sql
+
 COPY ./tsearch_data/ukrainian.syn $SHARE_PATH/tsearch_data/ukrainian.syn
 COPY --from=builder  /dict_uk/distr/hunspell/build/hunspell/uk_UA.dic $SHARE_PATH/tsearch_data/ukrainian.dict
 COPY --from=builder  /dict_uk/distr/hunspell/build/hunspell/uk_UA.aff $SHARE_PATH/tsearch_data/ukrainian.affix
 COPY --from=builder  /dict_uk/distr/postgresql/ukrainian.stop $SHARE_PATH/tsearch_data/ukrainian.stop
-
-COPY ./init-script.sql .
-RUN $(cat ./init-script.sql) >> $SHARE_PATH/snowball_create.sql && rm ./init-script.sql
 
 USER 26
