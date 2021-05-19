@@ -1,3 +1,6 @@
+ARG CRUNCYDATA_POSTGRES_IMAGE
+ARG CRUNCYDATA_POSTGRES_TAG
+
 FROM openjdk:8 as builder
 
 ENV JAVA_TOOL_OPTIONS -Dfile.encoding=UTF8
@@ -8,10 +11,6 @@ COPY ./Hunspell.groovy ./dict_uk/distr/hunspell/src/main/groovy
 
 WORKDIR ./dict_uk/distr/hunspell
 RUN ../../gradlew hunspell
-
-
-ARG CRUNCYDATA_POSTGRES_IMAGE
-ARG CRUNCYDATA_POSTGRES_TAG
 
 FROM registry.developers.crunchydata.com/crunchydata/$CRUNCYDATA_POSTGRES_IMAGE:$CRUNCYDATA_POSTGRES_TAG
 
