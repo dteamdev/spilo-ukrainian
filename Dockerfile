@@ -1,5 +1,4 @@
-ARG CRUNCYDATA_POSTGRES_IMAGE
-ARG CRUNCYDATA_POSTGRES_TAG
+ARG SPILO_TAG
 
 FROM openjdk:8 as builder
 
@@ -12,18 +11,41 @@ COPY ./Hunspell.groovy ./dict_uk/distr/hunspell/src/main/groovy
 WORKDIR ./dict_uk/distr/hunspell
 RUN ../../gradlew hunspell
 
-FROM registry.developers.crunchydata.com/crunchydata/$CRUNCYDATA_POSTGRES_IMAGE:$CRUNCYDATA_POSTGRES_TAG
 
-USER root
+RUN mv ./build/hunspell/uk_UA.dic ./ukrainian.dict
+RUN mv ./build/hunspell/uk_UA.aff ./ukrainian.affix
+RUN mv /dict_uk/distr/postgresql/ukrainian.stop ./ukrainian.stop
 
-ARG SHARE_PATH
+FROM registry.opensource.zalan.do/acid/spilo-$SPILO_TAG
 
-COPY ./init-script.sql $SHARE_PATH/
-RUN cat $SHARE_PATH/init-script.sql >> $SHARE_PATH/snowball_create.sql && rm $SHARE_PATH/init-script.sql
+COPY ./init-script.sql .
 
-COPY ./tsearch_data/ukrainian.syn $SHARE_PATH/tsearch_data/ukrainian.syn
-COPY --from=builder  /dict_uk/distr/hunspell/build/hunspell/uk_UA.dic $SHARE_PATH/tsearch_data/ukrainian.dict
-COPY --from=builder  /dict_uk/distr/hunspell/build/hunspell/uk_UA.aff $SHARE_PATH/tsearch_data/ukrainian.affix
-COPY --from=builder  /dict_uk/distr/postgresql/ukrainian.stop $SHARE_PATH/tsearch_data/ukrainian.stop
+# PG 13
+RUN cat ./init-script.sql >> /usr/share/postgresql/13/snowball_create.sql
 
-USER 26
+COPY ./tsearch_data/ukrainian.syn /usr/share/postgresql/13/tsearch_data/ukrainian.syn
+COPY --from=builder  ./ukrainian.dict ./ukrainian.affix ./ukrainian.stop /usr/share/postgresql/13/tsearch_data/
+
+# PG 12
+RUN cat ./init-script.sql >> /usr/share/postgresql/12/snowball_create.sql
+
+COPY ./tsearch_data/ukrainian.syn /usr/share/postgresql/12/tsearch_data/ukrainian.syn
+COPY --from=builder  ./ukrainian.dict ./ukrainian.affix ./ukrainian.stop /usr/share/postgresql/12/tsearch_data/
+
+# PG 11
+RUN cat ./init-script.sql >> /usr/share/postgresql/11/snowball_create.sql
+
+COPY ./tsearch_data/ukrainian.syn /usr/share/postgresql/11/tsearch_data/ukrainian.syn
+COPY --from=builder  ./ukrainian.dict ./ukrainian.affix ./ukrainian.stop /usr/share/postgresql/11/tsearch_data/
+
+# PG 10
+RUN cat ./init-script.sql >> /usr/share/postgresql/10/snowball_create.sql
+
+COPY ./tsearch_data/ukrainian.syn /usr/share/postgresql/10/tsearch_data/ukrainian.syn
+COPY --from=builder  ./ukrainian.dict ./ukrainian.affix ./ukrainian.stop /usr/share/postgresql/10/tsearch_data/
+
+# PG 9.6
+RUN cat ./init-script.sql >> /usr/share/postgresql/9.6/snowball_create.sql
+
+COPY ./tsearch_data/ukrainian.syn /usr/share/postgresql/9.6/tsearch_data/ukrainian.syn
+COPY --from=builder  ./ukrainian.dict ./ukrainian.affix ./ukrainian.stop /usr/share/postgresql/9.6/tsearch_data/

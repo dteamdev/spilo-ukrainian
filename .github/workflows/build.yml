@@ -7,21 +7,8 @@ on:
 
 jobs:
   docker:
-    strategy:
-      matrix:
-        include:
-          - image: crunchy-postgres
-            tag: centos8-12.6-4.6.2
-            share_path: /usr/pgsql-12/share
-          - image: crunchy-postgres-ha
-            tag: centos8-12.6-4.6.2
-            share_path: /usr/pgsql-12/share
-          - image: crunchy-postgres-gis
-            tag: centos8-12.6-3.0-4.6.2
-            share_path: /usr/pgsql-12/share
-          - image: crunchy-postgres-gis-ha
-            tag: centos8-12.6-3.0-4.6.2
-            share_path: /usr/pgsql-12/share
+    env:
+      SPILO_TAG: 13:2.0-p7
 
     runs-on: ubuntu-latest
     steps:
@@ -43,10 +30,8 @@ jobs:
         with:
           push: true
           build-args: |
-            CRUNCYDATA_POSTGRES_IMAGE=${{ matrix.image }}
-            CRUNCYDATA_POSTGRES_TAG=${{ matrix.tag }}
-            SHARE_PATH=${{ matrix.share_path }}
-          tags: dteamdev/${{ matrix.image }}-ukrainian:${{ matrix.tag }}
+            SPILO_TAG=${{ env.SPILO_TAG }}
+          tags: dteamdev/spilo-ukrainian-${{ env.SPILO_TAG }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
       - name: Update repo description
@@ -54,4 +39,4 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: dteamdev/${{ matrix.image }}-ukrainian
+          repository: dteamdev/spilo-ukrainian
